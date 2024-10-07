@@ -1,11 +1,15 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { CreateProjectInput } from './create-project.input';
+import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateProjectInput {
+
   @Field()
-  id: string;
+  id: string
   @Field()
-  name: string;
+  name: string
   @Field(() => Int)
-  code: number;
+  code: number
+
+
 }

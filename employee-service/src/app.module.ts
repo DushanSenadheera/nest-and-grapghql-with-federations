@@ -1,17 +1,21 @@
 import { Module } from '@nestjs/common';
-import { join } from 'path';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { AppResolver } from './app.resolver';
-import { EmployeeModule } from './employee/employee.module';
+import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Project } from './entity/project.entity';
+import { Location } from './entity/location.entity';
+import { EmployeeModule } from './employee.module';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      playground: true,
+    EmployeeModule,
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: { path: "src/schema.gql", federation: 2 },
+      buildSchemaOptions: {
+        orphanedTypes: [Project, Location],
+      },
+      playground: true
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -20,11 +24,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'root',
       database: 'employee',
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true,
-    }),
-    EmployeeModule,
+      entities: ["dist/**/*.entity{.ts,.js}"],
+      synchronize: false,
+    })
   ],
-  providers: [AppResolver],
 })
 export class AppModule {}

@@ -7,9 +7,6 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
   imports: [
     GraphQLModule.forRoot<ApolloGatewayDriverConfig>({
       driver: ApolloGatewayDriver,
-      // server: {
-      //   cors: true,
-      // },
       gateway: {
         supergraphSdl: new IntrospectAndCompose({
           subgraphs: [
